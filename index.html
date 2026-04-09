@@ -5874,7 +5874,7 @@
       let type;
       if(sfx==='CR')type='income';
       else if(sfx==='DR')type='expense';
-      else{const sC=/upi[\s\/](?:drc|cr(?!d)|ref|reversal)/i.test(desc)||/neft[^a-z]{0,10}cr|imps[^a-z]{0,10}cr/i.test(desc)||/interest\s*credit|\bint[\s\/]?cr\b/i.test(desc)||/csh[\s\/]?dep|cash[\s\/]?dep/i.test(desc);const sD=/upi[\s\/](?:drd|dr(?![cd]))/i.test(desc)||/neft[^a-z]{0,10}dr|imps[^a-z]{0,10}dr/i.test(desc)||/atm[\s\.]?wdl|atm\s*cash/i.test(desc)||/wdl[\s\/]?tfr|pos[\s\/]/i.test(desc);type=sC?'income':sD?'expense':(autoCategory(desc)?.type||'expense');}
+      else{const sC=/upi[\s\/](?:drc|cr(?!d)|ref|reversal)/i.test(desc)||/neft[^a-z]{0,10}cr|imps[^a-z]{0,10}cr/i.test(desc)||/interest\s*credit|\bint[\s\/]?cr\b/i.test(desc)||/csh[\s\/]?dep|cash[\s\/]?dep/i.test(desc)||(/^imps/i.test(desc)&&!/imps[^a-z]{0,10}dr/i.test(desc));const sD=/upi[\s\/](?:drd|dr(?![cd]))/i.test(desc)||/neft[^a-z]{0,10}dr|imps[^a-z]{0,10}dr/i.test(desc)||/atm[\s\.]?wdl|atm\s*cash/i.test(desc)||(/wdl[\s\/]?tfr/i.test(desc)&&!/^imps/i.test(desc))||/pos[\s\/]/i.test(desc);type=sC?'income':sD?'expense':(autoCategory(desc)?.type||'expense');}
       const autoCat=autoCategory(desc),cat=autoCat?.cat||'other';
       parsedTxns.push({date,desc,type,cat,amount});
 
@@ -6022,10 +6022,10 @@
         let type, cat;
 
         if (credit > 0 && debit === 0) {
-          type = autoCat?.type || 'income';
+          type = 'income';
           cat  = autoCat?.cat  || 'other';
         } else if (debit > 0 && credit === 0) {
-          type = autoCat?.type || 'expense';
+          type = 'expense';
           cat  = autoCat?.cat  || 'other';
         } else if (credit > 0 && debit > 0) {
           type = credit >= debit ? 'income' : 'expense';
